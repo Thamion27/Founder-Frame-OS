@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Founder Frame Scorecard",
+  "type": "object",
+  "required": [
+    "artifact_name",
+    "scores",
+    "decision"
+  ],
+  "properties": {
+    "artifact_name": {
+      "type": "string"
+    },
+    "artifact_type": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "reviewer": {
+      "type": "string"
+    },
+    "scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "vision_clarity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "user_specificity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "pain_reality": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "mechanism_strength": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "offer_translation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "proof_path": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "execution_simplicity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "quality_discipline": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "originality": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "founder_fit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        }
+      }
+    },
+    "total_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 50
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "do_not_build",
+        "extract_primitives",
+        "prototype_candidate",
+        "build_candidate",
+        "hold_for_review"
+      ]
+    },
+    "required_repairs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_action": {
+      "type": "string"
+    }
+  }
+}

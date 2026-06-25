@@ -1,0 +1,35 @@
+# Repository Map
+
+- `.github/ISSUE_TEMPLATE/bug_report.md`
+- `.github/ISSUE_TEMPLATE/feature_request.md`
+- `.github/PULL_REQUEST_TEMPLATE/pull_request_template.md`
+- `.gitignore`
+- `CHANGELOG.md`
+- `CONTRIBUTING.md`
+- `LICENSE.md`
+- `NOTICE.md`
+- `README.md`
+- `SECURITY.md`
+- `agent-specs/founder-frame-agent.yaml`
+- `docs/00_MASTER_ABSTRACT_AND_ARCHITECTURE.md`
+- `docs/01_ETSS.md`
+- `docs/02_FULL_OPERATIONAL_BLUEPRINT.md`
+- `docs/03_FOUNDER_FRAME_SCORECARD.md`
+- `examples/example_founder_session.md`
+- `examples/example_product_forge.md`
+- `governance/CLAIMS_SHEET.md`
+- `governance/CLEARANCE_CHECKLIST.md`
+- `governance/RISK_SHEET.md`
+- `governance/VERSIONING_POLICY.md`
+- `prompts/AGENTIC_MODES.md`
+- `prompts/COMPACT_AGENT_PROMPT.md`
+- `prompts/FOUNDER_FRAME_AI_MASTER_PROMPT.md`
+- `schemas/founder_frame_scorecard.schema.json`
+- `source-docs/Elite_Strategic_Advisor_bot_source.pdf`
+- `source-docs/Founder_Frame_AI_Agentic_Bot_Master_Prompt_v1.docx`
+- `source-docs/Founder_Frame_OS_ETSS_v1.docx`
+- `source-docs/Founder_Frame_OS_Full_Operational_Technical_Blueprint_v1.docx`
+- `templates/founder-frame-sprint.md`
+- `templates/founder-intake.md`
+- `templates/primitive-extraction.md`
+- `templates/quality-gate.md`
