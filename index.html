@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Founder Frame OS MVP</title>
+  <meta name="description" content="Founder Frame OS helps builders convert vision into product, product into proof, and proof into disciplined execution." />
+  <link rel="stylesheet" href="src/css/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">Founder Frame OS</p>
+      <h1>Convert vision into product, product into proof, and proof into disciplined execution.</h1>
+      <p>
+        A local, client-side MVP for founder intake, primitive extraction,
+        quality gating, and 7-day execution sprint generation.
+      </p>
+      <p class="note">
+        This is not Raspberry Pi FrameOS. This is Founder Frame OS: a symbolic founder-development system.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Founder Intake</h2>
+      <form id="intake-form">
+        <label>
+          Vision
+          <textarea id="vision" required placeholder="What are you trying to build?"></textarea>
+        </label>
+
+        <label>
+          Problem
+          <textarea id="problem" required placeholder="What painful problem are you solving?"></textarea>
+        </label>
+
+        <label>
+          Target User
+          <textarea id="user" required placeholder="Who specifically needs this?"></textarea>
+        </label>
+
+        <label>
+          Solution
+          <textarea id="solution" required placeholder="How does your product solve the problem?"></textarea>
+        </label>
+
+        <label>
+          Proof
+          <textarea id="proof" placeholder="What evidence, customer signal, prototype, or validation do you have?"></textarea>
+        </label>
+
+        <label>
+          Revenue Path
+          <textarea id="revenue" placeholder="How could this make money or justify continued effort?"></textarea>
+        </label>
+
+        <button type="submit">Run Founder Frame</button>
+      </form>
+    </section>
+
+    <section id="dashboard" class="card hidden"></section>
+  </main>
+
+  <script src="src/js/app.js"></script>
+</body>
+</html>
