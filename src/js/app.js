@@ -22,6 +22,20 @@ function lengthScore(text, minStrong, minAcceptable) {
   if (text.length >= minAcceptable) return 70;
   return 35;
 }
+
+function scoreRevenue(text) {
+  const lower = text.toLowerCase();
+  const weakPhrases = ["maybe", "someday", "eventually", "not sure", "might", "could"];
+  const genericRevenue = ["subscription", "subscriptions", "ads", "donations", "affiliate"];
+  const concreteSignals = ["$", "per month", "monthly", "one-time", "paid", "price", "client", "customer", "pilot", "invoice", "retainer", "tier", "package", "deposit"];
+
+  if (!text) return 0;
+  if (weakPhrases.some(phrase => lower.includes(phrase))) return 35;
+  if (genericRevenue.some(phrase => lower.includes(phrase)) && text.length < 60) return 35;
+  if (concreteSignals.some(signal => lower.includes(signal)) && text.length >= 50) return 100;
+  if (text.length >= 80) return 70;
+  return 35;
+}
 function scoreExecution(text) {
   const weakPhrases = ["soon", "later", "maybe", "try", "work on it", "figure it out"];
   const lower = text.toLowerCase();
@@ -39,7 +53,7 @@ function scoreFounder(data) {
     user: lengthScore(data.user, 80, 25),
     solution: lengthScore(data.solution, 100, 35),
     proof: lengthScore(data.proof, 80, 20),
-    revenue: lengthScore(data.revenue, 80, 20),
+    revenue: scoreRevenue(data.revenue),
     execution: scoreExecution(data.execution)
   };
 
