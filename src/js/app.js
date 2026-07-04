@@ -23,6 +23,29 @@ function lengthScore(text, minStrong, minAcceptable) {
   return 35;
 }
 
+function scoreRevenue(text) {
+  const lower = text.toLowerCase();
+  const weakPhrases = ["maybe", "someday", "eventually", "not sure", "might", "could"];
+  const genericRevenue = ["subscription", "subscriptions", "ads", "donations", "affiliate"];
+  const concreteSignals = ["$", "per month", "monthly", "one-time", "paid", "price", "client", "customer", "pilot", "invoice", "retainer", "tier", "package", "deposit"];
+
+  if (!text) return 0;
+  if (weakPhrases.some(phrase => lower.includes(phrase))) return 35;
+  if (genericRevenue.some(phrase => lower.includes(phrase)) && text.length < 60) return 35;
+  if (concreteSignals.some(signal => lower.includes(signal)) && text.length >= 50) return 100;
+  if (text.length >= 80) return 70;
+  return 35;
+}
+function scoreExecution(text) {
+  const weakPhrases = ["soon", "later", "maybe", "try", "work on it", "figure it out"];
+  const lower = text.toLowerCase();
+
+  if (!text) return 0;
+  if (weakPhrases.some(phrase => lower.includes(phrase))) return 35;
+  if (lower.includes("today") || lower.includes("tonight") || lower.includes("tomorrow") || lower.includes("by ")) return 100;
+  if (text.length >= 50) return 70;
+  return 35;
+}
 function scoreFounder(data) {
   const metrics = {
     vision: lengthScore(data.vision, 80, 25),
@@ -30,8 +53,8 @@ function scoreFounder(data) {
     user: lengthScore(data.user, 80, 25),
     solution: lengthScore(data.solution, 100, 35),
     proof: lengthScore(data.proof, 80, 20),
-    revenue: lengthScore(data.revenue, 80, 20),
-    execution: 70
+    revenue: scoreRevenue(data.revenue),
+    execution: scoreExecution(data.execution)
   };
 
   const total = Object.entries(metrics).reduce((sum, [key, score]) => {
@@ -52,7 +75,7 @@ function qualityGate(score, data) {
   if (score.metrics.solution < 70) issues.push("Solution needs sharper mechanism.");
   if (score.metrics.proof < 70) issues.push("Proof is weak or missing.");
   if (score.metrics.revenue < 70) issues.push("Revenue path is unclear.");
-
+    if (score.metrics.execution < 70) issues.push("Execution commitment is too vague or not time-bound.");
   let status = "Ready for Human Review";
   let className = "pass";
 
@@ -174,7 +197,8 @@ document.getElementById("intake-form").addEventListener("submit", function (even
     user: value("user"),
     solution: value("solution"),
     proof: value("proof"),
-    revenue: value("revenue")
+    revenue: value("revenue"),
+    execution: value("execution")
   };
 
   const score = scoreFounder(data);
