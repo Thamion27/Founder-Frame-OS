@@ -226,7 +226,7 @@ function listHtml(items, fallback) {
   return list.map(item => `<li>${item}</li>`).join("");
 }
 
-function render(data, score, gate, sprint, riskClaims) {
+function render(data, score, gate, sprint, riskClaims, humanApproval) {
   const dashboard = document.getElementById("dashboard");
   dashboard.classList.remove("hidden");
 
@@ -274,6 +274,12 @@ function render(data, score, gate, sprint, riskClaims) {
       <ul>${listHtml(riskClaims.boundaryFlags, "External use remains paused until CLEARANCE review.")}</ul>
     </div>
 
+    <h3>Human Approval Attestation</h3>
+    <div class="attestation-panel ${humanApproval.approved ? "pass" : "fail"}">
+      <p><strong>${humanApproval.status}</strong></p>
+      <ul>${listHtml(humanApproval.statements, "External use remains paused until CLEARANCE review.")}</ul>
+    </div>
+
     <h3>Primitive Extraction</h3>
     <p><strong>Vision:</strong> ${data.vision}</p>
     <p><strong>Problem:</strong> ${data.problem}</p>
@@ -287,7 +293,7 @@ function render(data, score, gate, sprint, riskClaims) {
     <p>Complete Day 1 before adding features, styling, automation, or monetization.</p>
   `;
 
-  localStorage.setItem("founderFrameLastRun", JSON.stringify({ data, score, gate, sprint, riskClaims }));
+  localStorage.setItem("founderFrameLastRun", JSON.stringify({ data, score, gate, sprint, riskClaims, humanApproval }));
 }
 
 document.getElementById("intake-form").addEventListener("submit", function (event) {
@@ -303,10 +309,21 @@ document.getElementById("intake-form").addEventListener("submit", function (even
     execution: value("execution")
   };
 
+  const humanApprovalChecked = document.getElementById("human-approval").checked;
+  const humanApproval = {
+    approved: humanApprovalChecked,
+    status: humanApprovalChecked ? "Human Approval: Acknowledged" : "Human Approval: Missing",
+    statements: [
+      "The human operator acknowledged this is an internal prototype result.",
+      "This acknowledgment does not authorize public release, monetization, controlled user testing, institutional use, customer-facing deployment, or external claims.",
+      "CLEARANCE review remains required before real-world exposure."
+    ]
+  };
+
   const score = scoreFounder(data);
   const gate = qualityGate(score, data);
   const sprint = generateSprint(data, gate);
   const riskClaims = assessRiskAndClaims(data, score, gate);
 
-  render(data, score, gate, sprint, riskClaims);
+  render(data, score, gate, sprint, riskClaims, humanApproval);
 });

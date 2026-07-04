@@ -1,4 +1,4 @@
-const REPORT_VERSION = "FFOS_REPORT_EXPORT_v0.5";
+const REPORT_VERSION = "FFOS_REPORT_EXPORT_v0.6";
 const CLEARANCE_POSTURE = "PROCEED INTERNAL / PAUSE EXTERNAL";
 
 function padTimePart(value) {
@@ -40,12 +40,21 @@ function buildFounderFrameReport(run, metadata) {
     ]
   };
 
+  const fallbackHumanApproval = {
+    approved: false,
+    status: "Human Approval: Not recorded in this run.",
+    statements: [
+      "External use remains paused until CLEARANCE review."
+    ]
+  };
+
   const {
     data,
     score,
     gate,
     sprint,
-    riskClaims = fallbackRiskClaims
+    riskClaims = fallbackRiskClaims,
+    humanApproval = fallbackHumanApproval
   } = run;
 
   const reportId = metadata.reportId;
@@ -74,6 +83,11 @@ function buildFounderFrameReport(run, metadata) {
 
   const boundaryFlags = reportList(
     riskClaims.boundaryFlags,
+    "External use remains paused until CLEARANCE review."
+  );
+
+  const humanApprovalStatements = reportList(
+    humanApproval.statements,
     "External use remains paused until CLEARANCE review."
   );
 
@@ -124,6 +138,16 @@ ${claimFlags}
 ### Boundary Reminder
 
 ${boundaryFlags}
+
+## Human Approval Attestation
+
+Status: ${humanApproval.status}
+
+Approved: ${humanApproval.approved ? "Yes" : "No"}
+
+### Attestation Statements
+
+${humanApprovalStatements}
 
 ## Founder Intake
 

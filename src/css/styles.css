@@ -156,3 +156,18 @@ ul {
 .risk-panel.fail {
   border-left: 6px solid #b3261e;
 }
+.attestation-panel {
+  border: 1px solid #e1dacd;
+  border-radius: 14px;
+  padding: 18px;
+  margin: 12px 0 24px;
+  background: #faf8f2;
+}
+
+.attestation-panel.pass {
+  border-left: 6px solid #176b37;
+}
+
+.attestation-panel.fail {
+  border-left: 6px solid #b3261e;
+}
