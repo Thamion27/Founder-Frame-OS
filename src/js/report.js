@@ -1,4 +1,4 @@
-const REPORT_VERSION = "FFOS_REPORT_EXPORT_v0.4";
+const REPORT_VERSION = "FFOS_REPORT_EXPORT_v0.5";
 const CLEARANCE_POSTURE = "PROCEED INTERNAL / PAUSE EXTERNAL";
 
 function padTimePart(value) {
@@ -25,8 +25,29 @@ function createReportFilename(date) {
   return `founder-frame-report-${timestamp}.md`;
 }
 
+function reportList(items, fallback) {
+  const list = Array.isArray(items) && items.length ? items : [fallback];
+  return list.map(item => `- ${item}`).join("\n");
+}
+
 function buildFounderFrameReport(run, metadata) {
-  const { data, score, gate, sprint } = run;
+  const fallbackRiskClaims = {
+    status: "Risk Review: Not recorded in this run.",
+    riskFlags: [],
+    claimFlags: [],
+    boundaryFlags: [
+      "External use remains paused until CLEARANCE review."
+    ]
+  };
+
+  const {
+    data,
+    score,
+    gate,
+    sprint,
+    riskClaims = fallbackRiskClaims
+  } = run;
+
   const reportId = metadata.reportId;
   const reportVersion = metadata.reportVersion;
   const generatedAt = metadata.generatedAt;
@@ -36,9 +57,25 @@ function buildFounderFrameReport(run, metadata) {
     .map(([key, value]) => `- ${key.toUpperCase()}: ${value}`)
     .join("\n");
 
-  const issues = gate.issues.length
-    ? gate.issues.map(issue => `- ${issue}`).join("\n")
-    : "- No critical blockers detected. Continue with human review.";
+  const issues = reportList(
+    gate.issues,
+    "No critical blockers detected. Continue with human review."
+  );
+
+  const riskFlags = reportList(
+    riskClaims.riskFlags,
+    "No major risk flags detected. Continue with human review."
+  );
+
+  const claimFlags = reportList(
+    riskClaims.claimFlags,
+    "No major claim flags detected. Keep claims bounded and evidence-aware."
+  );
+
+  const boundaryFlags = reportList(
+    riskClaims.boundaryFlags,
+    "External use remains paused until CLEARANCE review."
+  );
 
   const sprintItems = sprint
     .map(item => `- ${item.day}: ${item.task}\n  Proof: ${item.proof}`)
@@ -71,6 +108,22 @@ ${metrics}
 ## Quality Gate Issues
 
 ${issues}
+
+## Risk and Claims Review
+
+Status: ${riskClaims.status}
+
+### Risk Flags
+
+${riskFlags}
+
+### Claims Flags
+
+${claimFlags}
+
+### Boundary Reminder
+
+${boundaryFlags}
 
 ## Founder Intake
 

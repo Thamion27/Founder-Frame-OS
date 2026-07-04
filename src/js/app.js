@@ -23,6 +23,11 @@ function lengthScore(text, minStrong, minAcceptable) {
   return 35;
 }
 
+function containsAny(text, phrases) {
+  const lower = text.toLowerCase();
+  return phrases.some(phrase => lower.includes(phrase));
+}
+
 function scoreRevenue(text) {
   const lower = text.toLowerCase();
   const weakPhrases = ["maybe", "someday", "eventually", "not sure", "might", "could"];
@@ -36,6 +41,7 @@ function scoreRevenue(text) {
   if (text.length >= 80) return 70;
   return 35;
 }
+
 function scoreExecution(text) {
   const weakPhrases = ["soon", "later", "maybe", "try", "work on it", "figure it out"];
   const lower = text.toLowerCase();
@@ -46,6 +52,7 @@ function scoreExecution(text) {
   if (text.length >= 50) return 70;
   return 35;
 }
+
 function scoreFounder(data) {
   const metrics = {
     vision: lengthScore(data.vision, 80, 25),
@@ -75,7 +82,8 @@ function qualityGate(score, data) {
   if (score.metrics.solution < 70) issues.push("Solution needs sharper mechanism.");
   if (score.metrics.proof < 70) issues.push("Proof is weak or missing.");
   if (score.metrics.revenue < 70) issues.push("Revenue path is unclear.");
-    if (score.metrics.execution < 70) issues.push("Execution commitment is too vague or not time-bound.");
+  if (score.metrics.execution < 70) issues.push("Execution commitment is too vague or not time-bound.");
+
   let status = "Ready for Human Review";
   let className = "pass";
 
@@ -93,6 +101,81 @@ function qualityGate(score, data) {
     status,
     className,
     issues
+  };
+}
+
+function assessRiskAndClaims(data, score, gate) {
+  const combinedText = Object.values(data).join(" ");
+  const riskFlags = [];
+  const claimFlags = [];
+  const boundaryFlags = [
+    "External release, monetization, controlled user testing, institutional use, customer-facing deployment, and external claims remain paused."
+  ];
+
+  const overbroadAudienceSignals = ["everyone", "everybody", "anyone", "all people", "the public", "general public"];
+  const weakProofSignals = ["none", "no proof", "not yet", "nothing", "no evidence", "no validation"];
+  const prohibitedClaimSignals = ["guarantee", "guaranteed", "proven", "certified", "cures", "treats", "legal compliance", "investment returns", "automatic success"];
+  const externalUseSignals = ["public", "launch", "release", "customers", "clients", "sell", "paid", "subscription", "subscriptions", "school", "students", "institution", "workplace", "employees"];
+  const regulatedSignals = ["medical", "therapy", "clinical", "legal", "investment", "financial advice", "minors", "patients"];
+
+  if (containsAny(data.user, overbroadAudienceSignals)) {
+    riskFlags.push("Target audience is overbroad. Narrow to one specific user segment before outreach or product expansion.");
+  }
+
+  if (score.metrics.problem < 70) {
+    riskFlags.push("Problem clarity is weak. A vague problem increases build risk and claim risk.");
+  }
+
+  if (score.metrics.revenue < 70) {
+    riskFlags.push("Revenue path is unclear. Monetization should remain paused until buyer, price, and value are defined.");
+  }
+
+  if (score.metrics.execution < 70) {
+    riskFlags.push("Execution commitment is vague or not time-bound. Require a concrete next action before expansion.");
+  }
+
+  if (!data.proof || containsAny(data.proof, weakProofSignals)) {
+    claimFlags.push("Proof is missing or explicitly absent. Do not make external effectiveness claims.");
+  }
+
+  if (containsAny(data.solution, ["ai will solve", "ai solves", "automatic", "autonomous"])) {
+    claimFlags.push("Solution language may imply autonomous or guaranteed AI authority. Reframe as support until validated.");
+  }
+
+  if (containsAny(combinedText, prohibitedClaimSignals)) {
+    claimFlags.push("Potential prohibited claim language detected. Remove guarantees, certifications, treatment claims, and outcome promises.");
+  }
+
+  if (containsAny(combinedText, regulatedSignals)) {
+    boundaryFlags.push("Regulated-domain language detected. Professional review may be required before external use.");
+  }
+
+  if (containsAny(combinedText, externalUseSignals)) {
+    boundaryFlags.push("External-use or monetization language detected. CLEARANCE review is required before real-world exposure.");
+  }
+
+  const boundarySignalCount = Math.max(0, boundaryFlags.length - 1);
+  const flagCount = riskFlags.length + claimFlags.length + boundarySignalCount;
+
+  let status = "Risk Review: Internal Review May Continue";
+  let className = "pass";
+
+  if (flagCount > 0) {
+    status = "Risk Review: Revise Before External Claims";
+    className = "warn";
+  }
+
+  if (flagCount >= 4 || claimFlags.length >= 2 || gate.status === "Not Ready") {
+    status = "Risk Review: Not Cleared for External Use";
+    className = "fail";
+  }
+
+  return {
+    status,
+    className,
+    riskFlags,
+    claimFlags,
+    boundaryFlags
   };
 }
 
@@ -138,7 +221,12 @@ function generateSprint(data, gate) {
   ];
 }
 
-function render(data, score, gate, sprint) {
+function listHtml(items, fallback) {
+  const list = items.length ? items : [fallback];
+  return list.map(item => `<li>${item}</li>`).join("");
+}
+
+function render(data, score, gate, sprint, riskClaims) {
   const dashboard = document.getElementById("dashboard");
   dashboard.classList.remove("hidden");
 
@@ -172,6 +260,20 @@ function render(data, score, gate, sprint) {
     <h3>Quality Gate Issues</h3>
     <ul>${issuesHtml}</ul>
 
+    <h3>Risk and Claims Review</h3>
+    <div class="risk-panel ${riskClaims.className}">
+      <p><strong>${riskClaims.status}</strong></p>
+
+      <h4>Risk Flags</h4>
+      <ul>${listHtml(riskClaims.riskFlags, "No major risk flags detected. Continue with human review.")}</ul>
+
+      <h4>Claims Flags</h4>
+      <ul>${listHtml(riskClaims.claimFlags, "No major claim flags detected. Keep claims bounded and evidence-aware.")}</ul>
+
+      <h4>Boundary Reminder</h4>
+      <ul>${listHtml(riskClaims.boundaryFlags, "External use remains paused until CLEARANCE review.")}</ul>
+    </div>
+
     <h3>Primitive Extraction</h3>
     <p><strong>Vision:</strong> ${data.vision}</p>
     <p><strong>Problem:</strong> ${data.problem}</p>
@@ -185,7 +287,7 @@ function render(data, score, gate, sprint) {
     <p>Complete Day 1 before adding features, styling, automation, or monetization.</p>
   `;
 
-  localStorage.setItem("founderFrameLastRun", JSON.stringify({ data, score, gate, sprint }));
+  localStorage.setItem("founderFrameLastRun", JSON.stringify({ data, score, gate, sprint, riskClaims }));
 }
 
 document.getElementById("intake-form").addEventListener("submit", function (event) {
@@ -204,6 +306,7 @@ document.getElementById("intake-form").addEventListener("submit", function (even
   const score = scoreFounder(data);
   const gate = qualityGate(score, data);
   const sprint = generateSprint(data, gate);
+  const riskClaims = assessRiskAndClaims(data, score, gate);
 
-  render(data, score, gate, sprint);
+  render(data, score, gate, sprint, riskClaims);
 });

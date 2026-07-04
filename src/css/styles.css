@@ -132,3 +132,27 @@ ul {
 .hidden {
   display: none;
 }
+
+.risk-panel {
+  border: 1px solid #e1dacd;
+  border-radius: 14px;
+  padding: 18px;
+  margin: 12px 0 24px;
+  background: #faf8f2;
+}
+
+.risk-panel h4 {
+  margin: 16px 0 6px;
+}
+
+.risk-panel.pass {
+  border-left: 6px solid #176b37;
+}
+
+.risk-panel.warn {
+  border-left: 6px solid #9a5b00;
+}
+
+.risk-panel.fail {
+  border-left: 6px solid #b3261e;
+}
