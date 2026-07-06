@@ -1,4 +1,4 @@
-const REPORT_VERSION = "FFOS_REPORT_EXPORT_v0.6";
+const REPORT_VERSION = "FFOS_REPORT_EXPORT_v0.7";
 const CLEARANCE_POSTURE = "PROCEED INTERNAL / PAUSE EXTERNAL";
 
 function padTimePart(value) {
@@ -40,10 +40,21 @@ function buildFounderFrameReport(run, metadata) {
     ]
   };
 
-  const fallbackHumanApproval = {
+    const fallbackHumanApproval = {
     approved: false,
     status: "Human Approval: Not recorded in this run.",
     statements: [
+      "External use remains paused until CLEARANCE review."
+    ]
+  };
+
+  const fallbackClearanceReadiness = {
+    status: "CLEARANCE Packet: Not recorded in this run.",
+    present: [],
+    missing: [
+      "CLEARANCE packet readiness was not recorded."
+    ],
+    internalOnly: [
       "External use remains paused until CLEARANCE review."
     ]
   };
@@ -54,7 +65,8 @@ function buildFounderFrameReport(run, metadata) {
     gate,
     sprint,
     riskClaims = fallbackRiskClaims,
-    humanApproval = fallbackHumanApproval
+    humanApproval = fallbackHumanApproval,
+    clearanceReadiness = fallbackClearanceReadiness
   } = run;
 
   const reportId = metadata.reportId;
@@ -86,8 +98,23 @@ function buildFounderFrameReport(run, metadata) {
     "External use remains paused until CLEARANCE review."
   );
 
-  const humanApprovalStatements = reportList(
+    const humanApprovalStatements = reportList(
     humanApproval.statements,
+    "External use remains paused until CLEARANCE review."
+  );
+
+  const clearancePresent = reportList(
+    clearanceReadiness.present,
+    "No readiness evidence recorded."
+  );
+
+  const clearanceMissing = reportList(
+    clearanceReadiness.missing,
+    "No missing items detected in this internal checklist."
+  );
+
+  const clearanceInternalOnly = reportList(
+    clearanceReadiness.internalOnly,
     "External use remains paused until CLEARANCE review."
   );
 
@@ -148,6 +175,22 @@ Approved: ${humanApproval.approved ? "Yes" : "No"}
 ### Attestation Statements
 
 ${humanApprovalStatements}
+
+## CLEARANCE Packet Readiness
+
+Status: ${clearanceReadiness.status}
+
+### Present Evidence
+
+${clearancePresent}
+
+### Missing or Unresolved
+
+${clearanceMissing}
+
+### Internal-Only Limits
+
+${clearanceInternalOnly}
 
 ## Founder Intake
 

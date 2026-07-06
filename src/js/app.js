@@ -178,7 +178,67 @@ function assessRiskAndClaims(data, score, gate) {
     boundaryFlags
   };
 }
+function assessClearanceReadiness(data, score, gate, riskClaims, humanApproval) {
+  const present = [];
+  const missing = [];
+  const internalOnly = [];
 
+  present.push("Founder intake record captured.");
+  present.push("Risk and Claims Review generated.");
+  present.push("Internal prototype posture preserved: PROCEED INTERNAL / PAUSE EXTERNAL.");
+
+  if (humanApproval.approved) {
+    present.push("Human authority attestation recorded.");
+  } else {
+    missing.push("Human authority attestation is missing.");
+  }
+
+  if (score.metrics.user >= 70) {
+    present.push("Intended audience is specific enough for internal review.");
+  } else {
+    missing.push("Intended audience is too broad or unclear.");
+  }
+
+  if (score.metrics.problem >= 70 && score.metrics.solution >= 70) {
+    present.push("Use case has enough problem and solution clarity for internal review.");
+  } else {
+    missing.push("Use case statement remains incomplete.");
+  }
+
+  if (score.metrics.proof >= 70) {
+    present.push("Initial validation evidence or proof signal is present.");
+  } else {
+    missing.push("Validation evidence is weak or missing.");
+  }
+
+  if (riskClaims.claimFlags.length === 0) {
+    present.push("No major claims flags detected in this run.");
+  } else {
+    missing.push("Claims Sheet is not ready because claims require revision.");
+  }
+
+  if (riskClaims.riskFlags.length === 0) {
+    present.push("No major risk flags detected in this run.");
+  } else {
+    missing.push("Risk Sheet is not ready because risk flags remain unresolved.");
+  }
+
+  internalOnly.push("Executive Summary, ETSS, and Full Blueprint exist as upstream governance artifacts, but this static MVP does not verify the full packet.");
+  internalOnly.push("Public-Safe Language Sheet is not yet generated inside the app.");
+  internalOnly.push("Pause / rollback plan is represented only by the current internal posture.");
+  internalOnly.push("CFO, legal, compliance, or professional reviews are not recorded in this static MVP.");
+  internalOnly.push("CLEARANCE review has not been granted.");
+
+  const ready = missing.length === 0 && gate.status !== "Not Ready" && riskClaims.className !== "fail" && humanApproval.approved;
+
+  return {
+    status: ready ? "CLEARANCE Packet: Internal Checklist Looks Complete" : "CLEARANCE Packet: Incomplete",
+    className: ready ? "pass" : "fail",
+    present,
+    missing,
+    internalOnly
+  };
+}
 function generateSprint(data, gate) {
   const focus = gate.issues.length ? gate.issues[0] : "Begin market contact.";
 
@@ -226,7 +286,7 @@ function listHtml(items, fallback) {
   return list.map(item => `<li>${item}</li>`).join("");
 }
 
-function render(data, score, gate, sprint, riskClaims, humanApproval) {
+function render(data, score, gate, sprint, riskClaims, humanApproval, clearanceReadiness) {
   const dashboard = document.getElementById("dashboard");
   dashboard.classList.remove("hidden");
 
@@ -274,10 +334,24 @@ function render(data, score, gate, sprint, riskClaims, humanApproval) {
       <ul>${listHtml(riskClaims.boundaryFlags, "External use remains paused until CLEARANCE review.")}</ul>
     </div>
 
-    <h3>Human Approval Attestation</h3>
+        <h3>Human Approval Attestation</h3>
     <div class="attestation-panel ${humanApproval.approved ? "pass" : "fail"}">
       <p><strong>${humanApproval.status}</strong></p>
       <ul>${listHtml(humanApproval.statements, "External use remains paused until CLEARANCE review.")}</ul>
+    </div>
+
+    <h3>CLEARANCE Packet Readiness</h3>
+    <div class="clearance-readiness-panel ${clearanceReadiness.className}">
+      <p><strong>${clearanceReadiness.status}</strong></p>
+
+      <h4>Present Evidence</h4>
+      <ul>${listHtml(clearanceReadiness.present, "No readiness evidence recorded.")}</ul>
+
+      <h4>Missing or Unresolved</h4>
+      <ul>${listHtml(clearanceReadiness.missing, "No missing items detected in this internal checklist.")}</ul>
+
+      <h4>Internal-Only Limits</h4>
+      <ul>${listHtml(clearanceReadiness.internalOnly, "External use remains paused until CLEARANCE review.")}</ul>
     </div>
 
     <h3>Primitive Extraction</h3>
@@ -293,7 +367,7 @@ function render(data, score, gate, sprint, riskClaims, humanApproval) {
     <p>Complete Day 1 before adding features, styling, automation, or monetization.</p>
   `;
 
-  localStorage.setItem("founderFrameLastRun", JSON.stringify({ data, score, gate, sprint, riskClaims, humanApproval }));
+    localStorage.setItem("founderFrameLastRun", JSON.stringify({ data, score, gate, sprint, riskClaims, humanApproval, clearanceReadiness }));
 }
 
 document.getElementById("intake-form").addEventListener("submit", function (event) {
@@ -320,10 +394,11 @@ document.getElementById("intake-form").addEventListener("submit", function (even
     ]
   };
 
-  const score = scoreFounder(data);
+    const score = scoreFounder(data);
   const gate = qualityGate(score, data);
   const sprint = generateSprint(data, gate);
   const riskClaims = assessRiskAndClaims(data, score, gate);
+  const clearanceReadiness = assessClearanceReadiness(data, score, gate, riskClaims, humanApproval);
 
-  render(data, score, gate, sprint, riskClaims, humanApproval);
+  render(data, score, gate, sprint, riskClaims, humanApproval, clearanceReadiness);
 });
