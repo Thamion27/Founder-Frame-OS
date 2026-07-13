@@ -1,64 +1,142 @@
 # Founder Frame OS
 
-**Symbolic Founder Development System for Vision, Product, Quality, and Execution**
+**Real-World Founder Execution and Diagnostic Operating System**
 
-Founder Frame OS is a founder-development and execution architecture designed to help builders convert raw vision into market-facing product logic, validated proof, and disciplined execution.
+Founder Frame OS is working software and a governed execution architecture for turning ideas and business problems into structured decisions, measurable actions, evidence, and quality-gated execution.
 
-> **Core sentence:** Founder Frame OS is a symbolic founder-development system that helps builders convert raw vision into market proof through founder cognition, primitive extraction, quality control, and disciplined execution.
+> **Core sentence:** Founder Frame OS helps founders and builders convert vision into validated action, action into proof, and proof into disciplined execution.
 
 ## Official slogan
 
 **Convert vision into product, product into proof, and proof into disciplined execution.**
 
+## What problem it solves
+
+Founders, creators, and small-business operators often have strong ideas but weak operational clarity. The real failure is usually not a lack of ambition. It is the inability to define:
+
+- the specific problem,
+- the intended user,
+- the mechanism of value,
+- the proof requirement,
+- the revenue path,
+- the risks and claims,
+- and the next executable move.
+
+Founder Frame OS turns those uncertainties into a structured diagnostic and execution record.
+
+## Current working software
+
+The current static MVP runs in the browser and includes:
+
+- founder intake and structured scoring,
+- quality-gate decisions,
+- primitive extraction,
+- risk and claims review,
+- human approval attestation,
+- CLEARANCE packet readiness analysis,
+- a seven-day execution sprint,
+- local browser storage,
+- and downloadable Markdown reports.
+
+Current software version:
+
+**Static MVP v0.7 — internal prototype**
+
+Current posture:
+
+**PROCEED INTERNAL / PAUSE EXTERNAL**
+
 ## What this repository contains
 
-This repository packages Founder Frame OS into a GitHub-ready documentation and agent-instruction system:
+This repository contains the working application, governance architecture, implementation documents, prompts, schemas, and test evidence for Founder Frame OS:
 
+- `index.html` — browser application entry point
+- `src/js/app.js` — scoring, diagnostics, execution logic, risk review, attestation, and readiness logic
+- `src/js/report.js` — versioned Markdown report generation
+- `src/css/styles.css` — application presentation layer
+- `docs/00_MASTER_ABSTRACT_AND_ARCHITECTURE.md` — master system overview
 - `docs/01_ETSS.md` — Executive Technical Specifications Summary
-- `docs/02_FULL_OPERATIONAL_BLUEPRINT.md` — Full operational architecture
-- `prompts/FOUNDER_FRAME_AI_MASTER_PROMPT.md` — deployable agentic bot master prompt
-- `prompts/COMPACT_AGENT_PROMPT.md` — short-form prompt for constrained platforms
+- `docs/02_FULL_OPERATIONAL_BLUEPRINT.md` — full operational architecture
+- `docs/06_INTERNAL_TEST_LOG_v0.2.md` through `docs/10_INTERNAL_TEST_LOG_v0.6.md` — internal validation evidence
+- `prompts/FOUNDER_FRAME_AI_MASTER_PROMPT.md` — agentic system instructions
+- `prompts/COMPACT_AGENT_PROMPT.md` — compact prompt for constrained platforms
 - `agent-specs/founder-frame-agent.yaml` — platform-neutral agent specification
 - `schemas/founder_frame_scorecard.schema.json` — structured scorecard schema
-- `templates/` — reusable founder sessions, primitive extraction, QC gates, and sprint templates
-- `governance/` — CLEARANCE-style review, claims, risk, and versioning controls
-- `source-docs/` — original source DOCX/PDF artifacts
+- `templates/` — reusable intake, primitive extraction, quality-gate, and sprint templates
+- `governance/` — CLEARANCE-style claims, risk, review, and version-control artifacts
+- `source-docs/` — original source documents
 
-## Category
+## Operating model
 
-**Symbolic Founder Development** — the practice of modeling the founder’s higher operating frame so the builder can develop sharper judgment, stronger execution discipline, clearer product thinking, and deeper ownership over the mission.
+Founder Frame OS performs three practical roles:
 
-## Three-part identity
+1. **The Mirror** — exposes unclear thinking, assumptions, avoidance, and unsupported confidence.
+2. **The Forge** — converts raw ideas into structured product, offer, proof, and execution logic.
+3. **The Gate** — blocks weak claims, uncontrolled expansion, and premature external deployment.
 
-1. **The Mirror** — reflects founder thinking with directness and clarity.
-2. **The Forge** — converts raw vision into structured product logic.
-3. **The Gate** — blocks weak claims, imitation, drift, and premature deployment.
+These are operating functions, not substitutes for founder authority.
 
-## Use cases
+## Current use cases
 
-- Custom GPT / Claude Project / Gemini Gem system prompt
-- Founder diagnostic agent
-- Product-forging sprint assistant
-- Sussex Web Co client intake and AI-readiness workflow
-- DigitalHermetica internal quality-control layer
-- Founder education and decision-training curriculum
+- internal founder and product diagnostics,
+- idea-to-execution planning,
+- quality-gated product definition,
+- risk and claims review,
+- evidence and test-log generation,
+- Sussex Web Co business-diagnostic workflows,
+- DigitalHermetica internal quality control,
+- and preparation for future real-world case files.
 
-## Public-safe boundary
+## Real-world development direction
 
-Founder Frame OS does **not** replace the founder. It does not provide legal, medical, tax, investment, or psychological treatment advice. It is a symbolic-operational development system for clarity, product formation, quality control, and execution discipline.
+The next development direction is a **Local Business Diagnostic Mode** that will help evaluate whether a local business can be clearly understood, trusted, contacted, and improved by a real customer.
 
-## Recommended repository status
+Planned diagnostic outputs include:
 
-Start as a **private repository** until the Claims Sheet, Risk Sheet, README language, and public-facing scope are reviewed.
+- business clarity score,
+- offer clarity score,
+- trust signal score,
+- conversion readiness score,
+- AI answerability score,
+- risk and claims flags,
+- recommended homepage language,
+- immediate corrective actions,
+- and a seven-day execution plan.
+
+This roadmap is not yet a claim of completed functionality. It is the next controlled build target.
 
 ## Quick start
 
-1. Read `docs/00_MASTER_ABSTRACT_AND_ARCHITECTURE.md`.
-2. Review `docs/01_ETSS.md` and `docs/02_FULL_OPERATIONAL_BLUEPRINT.md`.
-3. Copy `prompts/FOUNDER_FRAME_AI_MASTER_PROMPT.md` into the target agent platform.
-4. Use `templates/founder-intake.md` to run the first Founder Frame session.
-5. Use `templates/quality-gate.md` before any public or client-facing deployment.
+1. Clone or download this repository.
+2. Open `index.html` in a modern browser.
+3. Complete the founder intake form.
+4. Review the score, quality gate, primitive map, risk review, human attestation, and CLEARANCE readiness output.
+5. Download the generated Founder Frame report.
+6. Use the execution sprint for the next internal action.
+
+## Governance boundary
+
+Founder Frame OS does **not** replace the founder or grant autonomous authority to AI.
+
+It does not provide legal, medical, tax, investment, regulatory, or psychological treatment advice. Current software remains an internal prototype and does not authorize:
+
+- public release,
+- monetization,
+- controlled user testing,
+- institutional use,
+- customer-facing deployment,
+- or external claims.
+
+Human review and formal CLEARANCE remain required before real-world exposure.
+
+## Evidence standard
+
+Founder Frame OS follows a simple seriousness standard:
+
+**Real code. Real problem. Real user. Real evidence. Controlled claims. Disciplined execution.**
+
+No real-world proof means no serious external claim.
 
 ## Repository doctrine
 
-Build from truth. Test against reality. Execute without excuses.
+**Build from truth. Test against reality. Execute without excuses.**
